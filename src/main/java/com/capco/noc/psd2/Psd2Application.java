@@ -5,6 +5,8 @@ import com.capco.noc.psd2.domain.BankAccount;
 import com.capco.noc.psd2.domain.Currency;
 import com.capco.noc.psd2.domain.Transaction;
 import com.capco.noc.psd2.repository.AccountRepository;
+import com.capco.noc.psd2.repository.BankAccountRepository;
+import com.capco.noc.psd2.repository.TransactionRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,6 +19,8 @@ import java.util.*;
 public class Psd2Application {
 
 	private static AccountRepository accountRepository;
+	private static BankAccountRepository bankAccountRepository;
+	private static TransactionRepository transactionRepository;
 
 	private final static Random random = new Random();
 
@@ -25,20 +29,27 @@ public class Psd2Application {
 
 
 		System.out.println();
-	}
+        System.out.println(accountRepository.findAll());
+        System.out.println(accountRepository.findAll().iterator().next().getBankAccounts().size());
+    }
 
 	/*
 	* Initialise embedded H2 database with some initial data
 	* */
 	@Bean
-	CommandLineRunner loadData(AccountRepository accountRepository) {
+	CommandLineRunner loadData(AccountRepository accountRepository,
+                               BankAccountRepository bankAccountRepository,
+                               TransactionRepository transactionRepository) {
 
 		Psd2Application.accountRepository = accountRepository;
+        Psd2Application.bankAccountRepository = bankAccountRepository;
+        Psd2Application.transactionRepository = transactionRepository;
 
 		return (args) -> {
 			Account account = new Account();
 			account.setUsername("admin");
 			account.setPassword("12345");
+			accountRepository.save(account);
 
 			BankAccount bankAccount1 = new BankAccount();
 			bankAccount1.setAccountHolderName("John Doe");
@@ -47,6 +58,7 @@ public class Psd2Application {
 			bankAccount1.setIban("AT174481184921362929");
 			bankAccount1.setBalance(2389.45);
 			bankAccount1.setCurrency(Currency.EUR);
+			bankAccountRepository.save(bankAccount1);
 			bankAccount1.setTransactions(generateRandomTransactions(20, bankAccount1));
 
 			BankAccount bankAccount2 = new BankAccount();
@@ -56,6 +68,7 @@ public class Psd2Application {
 			bankAccount2.setIban("ES174481181234362929");
 			bankAccount2.setBalance(1238.45);
 			bankAccount2.setCurrency(Currency.EUR);
+            bankAccountRepository.save(bankAccount2);
 			bankAccount2.setTransactions(generateRandomTransactions(15, bankAccount2));
 
 			BankAccount bankAccount3 = new BankAccount();
@@ -65,6 +78,7 @@ public class Psd2Application {
 			bankAccount3.setIban("DE1744567894921362929");
 			bankAccount3.setBalance(189.43);
 			bankAccount3.setCurrency(Currency.EUR);
+            bankAccountRepository.save(bankAccount3);
 			bankAccount3.setTransactions(generateRandomTransactions(25, bankAccount3));
 
 			account.setBankAccounts(new ArrayList<BankAccount>(){{
@@ -73,6 +87,9 @@ public class Psd2Application {
 				add(bankAccount3);
 			}});
 
+            bankAccountRepository.save(bankAccount1);
+            bankAccountRepository.save(bankAccount2);
+            bankAccountRepository.save(bankAccount3);
 			accountRepository.save(account);
 		};
 	}
@@ -87,6 +104,7 @@ public class Psd2Application {
 			transaction.setDate(generateRandomDate());
 			transaction.setCounterParty("counterParty-" + i);
 			transaction.setDescription("transaction-description-" + i);
+            transactionRepository.save(transaction);
 
 			transactionList.add(transaction);
 		}
