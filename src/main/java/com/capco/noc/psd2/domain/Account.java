@@ -14,7 +14,7 @@ public class Account {
     @OneToMany(mappedBy = "ownerAccount", fetch = FetchType.EAGER)
     private List<BankAccount> bankAccounts = new ArrayList<>();
 
-    private String username;
+    private String email;
     private String password;
 
     public Account() {}
@@ -35,12 +35,12 @@ public class Account {
         this.bankAccounts = bankAccounts;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -53,10 +53,10 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account{" +
+        return "FidorAccount{" +
                 "id=" + id +
                 ", bankAccounts=" + bankAccounts +
-                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
