@@ -1,6 +1,6 @@
 package com.capco.noc.psd2.server.fidor.domain;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,35 +17,35 @@ public class FidorAccount {
     @JoinTable
     private List<FidorCustomer> fidorCustomers = new ArrayList<>();
 
-    @SerializedName("account_number")
+    @JsonProperty("account_number")
     private String accountNumber;
     private String iban;
 
     //Last 2 digits are cents, so 12300 is 123,00
     private int balance;
 
-    @SerializedName("balance_available")
+    @JsonProperty("balance_available")
     private int balanceAvailable;
     private int overdraft;
 
-    @SerializedName("preauth_amount")
+    @JsonProperty("preauth_amount")
     private int preAuthorizedAmount;
 
     private String currency;
 
-    @SerializedName("created_at")
+    @JsonProperty("created_at")
     private long createdAt;
 
-    @SerializedName("updated_at")
+    @JsonProperty("updated_at")
     private long updatedAt;
 
-    @SerializedName("is_debit_note_enabled")
+    @JsonProperty("is_debit_note_enabled")
     private boolean isDebitNoteEnabled;
 
-    @SerializedName("is_locked")
+    @JsonProperty("is_locked")
     private boolean isLocked;
 
-    @SerializedName("is_trusted")
+    @JsonProperty("is_trusted")
     private boolean isTrusted;
 
     public FidorAccount() {}

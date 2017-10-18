@@ -7,6 +7,8 @@ import com.capco.noc.psd2.server.fidor.repo.FidorAccountRepository;
 import com.capco.noc.psd2.server.fidor.repo.FidorCustomerRepository;
 import com.capco.noc.psd2.server.fidor.repo.FidorTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,34 +34,58 @@ public class FidorRestController {
         this.fidorTransactionRepository = fidorTransactionRepository;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/hello")
-    String hello(){
-        return "Hello";
+    @RequestMapping(method = RequestMethod.GET, value = "/customer/{name}")
+    ResponseEntity<FidorCustomer> getCustomer(@PathVariable String name){
+        FidorCustomer customer = fidorCustomerRepository.findByCustomerName(name);
+
+        if(customer == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/customer/{email}")
-    FidorCustomer getCustomer(@PathVariable String email){
-        return fidorCustomerRepository.findByEmail(email);
-    }
+    @RequestMapping(method = RequestMethod.GET, value = "/customer/{name}/accounts")
+    ResponseEntity<List<FidorAccount>> getAccounts(@PathVariable String name){
+        List<FidorAccount> accounts = fidorAccountRepository.findByFidorCustomersCustomerName(name);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/customer/{email}/accounts")
-    List<FidorAccount> getAccounts(@PathVariable String email){
-        return fidorAccountRepository.findByFidorCustomersEmail(email);
+        if(accounts == null || accounts.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/account/{iban}")
-    List<FidorAccount> getAccountByIban(@PathVariable String iban){
-        return fidorAccountRepository.findByIban(iban);
+    ResponseEntity<FidorAccount> getAccountByIban(@PathVariable String iban){
+        FidorAccount account = fidorAccountRepository.findByIban(iban);
+
+        if(account == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(account, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/account/{iban}/transactions")
-    List<FidorTransaction> getAccountTransactions(@PathVariable String iban){
-        FidorAccount fidorAccount = fidorAccountRepository.findByIban(iban).get(0);
-        return fidorTransactionRepository.findByAccountId(fidorAccount.getId());
+    ResponseEntity<List<FidorTransaction>> getAccountTransactions(@PathVariable String iban){
+        FidorAccount fidorAccount = fidorAccountRepository.findByIban(iban);
+
+        if(fidorAccount == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(fidorTransactionRepository.findByAccountId(fidorAccount.getId()), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/transaction/{transactionId}")
-    FidorTransaction getTransactionById(@PathVariable String transactionId){
-        return fidorTransactionRepository.findOne(transactionId);
+    ResponseEntity<FidorTransaction> getTransactionById(@PathVariable String transactionId){
+        FidorTransaction transaction = fidorTransactionRepository.findOne(transactionId);
+
+        if(transaction == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(transaction, HttpStatus.OK);
     }
 }

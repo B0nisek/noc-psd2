@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface FidorCustomerRepository extends CrudRepository<FidorCustomer, String>{
 
-    FidorCustomer findByEmail(String email);
+    FidorCustomer findByCustomerName(String customerName);
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface FidorAccountRepository extends CrudRepository<FidorAccount, String> {
 
-    List<FidorAccount> findByFidorCustomersEmail(String email);
+    List<FidorAccount> findByFidorCustomersCustomerName(String name);
 
-    List<FidorAccount> findByIban(String iban);
+    FidorAccount findByIban(String iban);
 }

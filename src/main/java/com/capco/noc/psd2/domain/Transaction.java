@@ -81,7 +81,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "FidorTransaction{" +
+        return "Transaction{" +
                 "id=" + id +
                 ", transactionId='" + transactionId + '\'' +
                 ", amount=" + amount +

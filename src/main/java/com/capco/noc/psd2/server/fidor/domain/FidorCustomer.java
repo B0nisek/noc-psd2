@@ -1,6 +1,7 @@
 package com.capco.noc.psd2.server.fidor.domain;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,18 +14,21 @@ public class FidorCustomer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "fidorCustomers")
     private List<FidorAccount> fidorAccounts = new ArrayList<>();
 
+    @JsonProperty("customer_name")
+    private String customerName;
     private String email;
 
-    @SerializedName("created_at")
+    @JsonProperty("created_at")
     private long createdAt;
 
-    @SerializedName("last_sign_in_at")
+    @JsonProperty("last_sign_in_at")
     private long lastSignInAt;
 
-    @SerializedName("updated_at")
+    @JsonProperty("updated_at")
     private long updatedAt;
 
     private String city;
@@ -32,33 +36,33 @@ public class FidorCustomer {
     private String fax;
     private String mobile;
 
-    @SerializedName("postal_code")
+    @JsonProperty("postal_code")
     private String postalCode;
     private String street;
 
-    @SerializedName("street_number")
+    @JsonProperty("street_number")
     private String streetNumber;
 
     private long birthday;
 
-    @SerializedName("first_name")
+    @JsonProperty("first_name")
     private String firstName;
 
-    @SerializedName("last_name")
+    @JsonProperty("last_name")
     private String lastName;
 
-    @SerializedName("maiden_name")
+    @JsonProperty("maiden_name")
     private String maidenName;
     private String nick;
     private String title;
     private String gender;
 
-    @SerializedName("marital_status")
+    @JsonProperty("marital_status")
     private String maritalStatus;
     private String nationality;
     private String religion;
 
-    @SerializedName("is_verified")
+    @JsonProperty("is_verified")
     private boolean isVerified;
 
     public FidorCustomer() {}
@@ -77,6 +81,14 @@ public class FidorCustomer {
 
     public void setFidorAccounts(List<FidorAccount> fidorAccounts) {
         this.fidorAccounts = fidorAccounts;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public String getEmail() {
@@ -259,6 +271,7 @@ public class FidorCustomer {
     public String toString() {
         return "FidorCustomer{" +
                 "id='" + id + '\'' +
+                ", customerName='" + customerName + '\'' +
                 ", email='" + email + '\'' +
                 ", createdAt=" + createdAt +
                 ", lastSignInAt=" + lastSignInAt +

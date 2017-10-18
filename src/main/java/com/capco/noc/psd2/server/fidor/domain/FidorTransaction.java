@@ -1,6 +1,6 @@
 package com.capco.noc.psd2.server.fidor.domain;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 
@@ -11,35 +11,35 @@ public class FidorTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
-    @SerializedName("account_id")
+    @JsonProperty("account_id")
     private String accountId;
 
-    @SerializedName("transaction_type")
+    @JsonProperty("transaction_type")
     private String transactionType;
     private String subject;
     private int amount;
     private String currency;
 
-    @SerializedName("booking_code")
+    @JsonProperty("booking_code")
     private String bookingCode;
 
-    @SerializedName("booking_date")
+    @JsonProperty("booking_date")
     private long bookingDate;
 
-    @SerializedName("value_date")
+    @JsonProperty("value_date")
     private long valueDate;
 
-    @SerializedName("return_transaction_id")
+    @JsonProperty("return_transaction_id")
     private String returnTransactionId;
 
-    @SerializedName("created_at")
+    @JsonProperty("created_at")
     private long createdAt;
 
-    @SerializedName("updated_at")
+    @JsonProperty("updated_at")
     private long updatedAt;
 
     @Embedded
-    @SerializedName("transaction_type_details")
+    @JsonProperty("transaction_type_details")
     private TransactionTypeDetails transactionTypeDetails;
 
     public FidorTransaction() {}
@@ -173,16 +173,16 @@ public class FidorTransaction {
     @Embeddable
     public static class TransactionTypeDetails {
 
-        @SerializedName("sepa_credit_transfer_id")
+        @JsonProperty("sepa_credit_transfer_id")
         private String sepaCreditTransferId;
 
-        @SerializedName("remote_name")
+        @JsonProperty("remote_name")
         private String remoteName;
 
-        @SerializedName("remote_iban")
+        @JsonProperty("remote_iban")
         private String remoteIban;
 
-        @SerializedName("remote_bic")
+        @JsonProperty("remote_bic")
         private String remoteBic;
 
         public TransactionTypeDetails() {}

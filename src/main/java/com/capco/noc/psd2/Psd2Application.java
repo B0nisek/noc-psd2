@@ -68,7 +68,7 @@ public class Psd2Application {
 
 	private static void initDomainModel(){
         Account account = new Account();
-        account.setEmail("john.doe@mail.com");
+        account.setUsername("johndoe");
         account.setPassword("12345");
         accountRepository.save(account);
 
@@ -119,6 +119,7 @@ public class Psd2Application {
 
     private static void initFidor(){
         FidorCustomer fidorCustomer = new FidorCustomer();
+        fidorCustomer.setCustomerName("johndoe");
         fidorCustomer.setEmail("john.doe@mail.com");
         fidorCustomer.setCreatedAt(generateRandomDate());
         fidorCustomer.setLastSignInAt(generateRandomDate());
