@@ -7,18 +7,22 @@ import com.capco.noc.psd2.domain.Transaction;
 import com.capco.noc.psd2.repository.AccountRepository;
 import com.capco.noc.psd2.repository.BankAccountRepository;
 import com.capco.noc.psd2.repository.TransactionRepository;
+import com.capco.noc.psd2.server.bbva.domain.BbvaAccount;
+import com.capco.noc.psd2.server.bbva.domain.BbvaTransaction;
+import com.capco.noc.psd2.server.bbva.domain.BbvaUser;
+import com.capco.noc.psd2.server.bbva.repo.BbvaAccountRepository;
+import com.capco.noc.psd2.server.bbva.repo.BbvaTransactionRepository;
+import com.capco.noc.psd2.server.bbva.repo.BbvaUserRepository;
 import com.capco.noc.psd2.server.fidor.domain.FidorCustomer;
 import com.capco.noc.psd2.server.fidor.domain.FidorAccount;
 import com.capco.noc.psd2.server.fidor.domain.FidorTransaction;
 import com.capco.noc.psd2.server.fidor.repo.FidorAccountRepository;
 import com.capco.noc.psd2.server.fidor.repo.FidorCustomerRepository;
 import com.capco.noc.psd2.server.fidor.repo.FidorTransactionRepository;
-import com.capco.noc.psd2.server.fidor.service.FidorRestController;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -36,6 +40,11 @@ public class Psd2Application {
     private static FidorCustomerRepository fidorCustomerRepository;
     private static FidorTransactionRepository fidorTransactionRepository;
 
+    //Bbva repositories
+    private static BbvaUserRepository bbvaUserRepository;
+    private static BbvaAccountRepository bbvaAccountRepository;
+    private static BbvaTransactionRepository bbvaTransactionRepository;
+
 	private final static Random random = new Random();
 
 	public static void main(String[] args) {
@@ -51,7 +60,10 @@ public class Psd2Application {
                                TransactionRepository transactionRepository,
                                FidorCustomerRepository fidorCustomerRepository,
                                FidorAccountRepository fidorAccountRepository,
-                               FidorTransactionRepository fidorTransactionRepository) {
+                               FidorTransactionRepository fidorTransactionRepository,
+                               BbvaUserRepository bbvaUserRepository,
+                               BbvaAccountRepository bbvaAccountRepository,
+                               BbvaTransactionRepository bbvaTransactionRepository) {
 
 		Psd2Application.accountRepository = accountRepository;
         Psd2Application.bankAccountRepository = bankAccountRepository;
@@ -59,10 +71,14 @@ public class Psd2Application {
         Psd2Application.fidorCustomerRepository = fidorCustomerRepository;
         Psd2Application.fidorAccountRepository = fidorAccountRepository;
         Psd2Application.fidorTransactionRepository = fidorTransactionRepository;
+        Psd2Application.bbvaUserRepository = bbvaUserRepository;
+        Psd2Application.bbvaAccountRepository = bbvaAccountRepository;
+        Psd2Application.bbvaTransactionRepository = bbvaTransactionRepository;
 
 		return (args) -> {
 		    initDomainModel();
 		    initFidor();
+		    initBbva();
 		};
 	}
 
@@ -162,6 +178,54 @@ public class Psd2Application {
         generateRandomFidorTransactions(30, fidorAccount.getId());
     }
 
+    private static void initBbva(){
+        BbvaUser bbvaUser = new BbvaUser();
+        bbvaUser.setUserId("johndoe");
+        bbvaUser.setFirstName("John");
+        bbvaUser.setSurname("Doe");
+        bbvaUser.setSecondSurname("Juanito");
+        bbvaUser.setSex("MALE");
+        bbvaUser.setBirthdate(generateRandomDate());
+        bbvaUser.setEmail("john.doe@mail.com");
+        bbvaUser.setPhone("+421123456789");
+
+        BbvaUser.IdentityDocument identityDocument = new BbvaUser.IdentityDocument();
+        identityDocument.setNumber("00000000-A");
+        identityDocument.setType(BbvaUser.IdentityDocument.IdentityDocumentType.PASSPORT);
+        bbvaUser.setIdentityDocument(identityDocument);
+
+        BbvaUser.Address address = new BbvaUser.Address();
+        address.setAddressId("000111");
+        address.setAdditionalData("2 I");
+        address.setDoor("E");
+        address.setFloor("7");
+        address.setCity("Malaga");
+        address.setStreetName("Calle San Miguel");
+        address.setStreetNumber("0024");
+        address.setStreetType("CL");
+        address.setZipcode("29001");
+        address.setCountry("Spain");
+        address.setAddressType("fiscal");
+        bbvaUser.setAddress(address);
+        bbvaUserRepository.save(bbvaUser);
+
+        BbvaAccount bbvaAccount = new BbvaAccount();
+        bbvaAccount.setUserId("johndoe");
+        bbvaAccount.setAlias("My Awesome Spanish Account");
+        bbvaAccount.setType(BbvaAccount.Type.CREDIT);
+        bbvaAccount.setNumber("1785");
+        bbvaAccount.setBalance(2685.2);
+        bbvaAccount.setCurrency("EUR");
+
+        BbvaAccount.Formats formats = new BbvaAccount.Formats();
+        formats.setIban("ES6968867819113534431785");
+        formats.setCcc("68867819113534431785");
+        bbvaAccount.setFormats(formats);
+        bbvaAccountRepository.save(bbvaAccount);
+
+        generateRandomBbvaTransactions(20, bbvaAccount.getId());
+    }
+
     private static void generateRandomFidorTransactions(int num, String accountId){
         for(int i = 0; i < num; i++){
             FidorTransaction fidorTransaction = new FidorTransaction();
@@ -184,6 +248,42 @@ public class Psd2Application {
             details.setRemoteBic("GENODDF2EJ1");
             fidorTransaction.setTransactionTypeDetails(details);
             fidorTransactionRepository.save(fidorTransaction);
+        }
+    }
+
+    private static void generateRandomBbvaTransactions(int num, String accountId){
+        for(int i = 0; i < num; i++){
+            BbvaTransaction bbvaTransaction = new BbvaTransaction();
+            bbvaTransaction.setAccountId(accountId);
+            bbvaTransaction.setOperationDate(generateRandomDate());
+            bbvaTransaction.setValueDate(generateRandomDate());
+            bbvaTransaction.setAmount(15 + (250 - 15) * random.nextInt());
+            bbvaTransaction.setCurrency("EUR");
+            bbvaTransaction.setDescription("Transaction-" + i + "-description");
+
+            BbvaTransaction.Category category = new BbvaTransaction.Category();
+            category.setCatId("12");
+            category.setCatName("PARTY");
+            bbvaTransaction.setCategory(category);
+
+            BbvaTransaction.SubCategory subCategory = new BbvaTransaction.SubCategory();
+            subCategory.setSubCatId("62");
+            subCategory.setSubCatName("SENT TRANSFER");
+            bbvaTransaction.setSubCategory(subCategory);
+
+            BbvaTransaction.ClientNote clientNote = new BbvaTransaction.ClientNote();
+            clientNote.setClientNoteDate(bbvaTransaction.getOperationDate());
+            clientNote.setText("La nota del alquiler de la party");
+            bbvaTransaction.setClientNote(clientNote);
+
+            BbvaTransaction.AttachedInfo attachedInfo = new BbvaTransaction.AttachedInfo();
+            attachedInfo.setDate(bbvaTransaction.getOperationDate());
+            attachedInfo.setSize(1234);
+            attachedInfo.setName("70"+i+".png");
+            attachedInfo.setType("image/png");
+            bbvaTransaction.setAttachedInfo(attachedInfo);
+
+            bbvaTransactionRepository.save(bbvaTransaction);
         }
     }
 

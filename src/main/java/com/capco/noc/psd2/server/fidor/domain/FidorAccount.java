@@ -161,23 +161,4 @@ public class FidorAccount {
     public void setTrusted(boolean trusted) {
         isTrusted = trusted;
     }
-
-    @Override
-    public String toString() {
-        return "FidorAccount{" +
-                "id='" + id + '\'' +
-                ", accountNumber='" + accountNumber + '\'' +
-                ", iban='" + iban + '\'' +
-                ", balance=" + balance +
-                ", balanceAvailable=" + balanceAvailable +
-                ", overdraft=" + overdraft +
-                ", preAuthorizedAmount=" + preAuthorizedAmount +
-                ", currency='" + currency + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", isDebitNoteEnabled=" + isDebitNoteEnabled +
-                ", isLocked=" + isLocked +
-                ", isTrusted=" + isTrusted +
-                '}';
-    }
 }

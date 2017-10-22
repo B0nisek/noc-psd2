@@ -148,25 +148,6 @@ public class FidorTransaction {
         this.transactionTypeDetails = transactionTypeDetails;
     }
 
-    @Override
-    public String toString() {
-        return "FidorTransaction{" +
-                "id='" + id + '\'' +
-                ", accountId='" + accountId + '\'' +
-                ", transactionType='" + transactionType + '\'' +
-                ", subject='" + subject + '\'' +
-                ", amount=" + amount +
-                ", currency='" + currency + '\'' +
-                ", bookingCode='" + bookingCode + '\'' +
-                ", bookingDate=" + bookingDate +
-                ", valueDate=" + valueDate +
-                ", returnTransactionId='" + returnTransactionId + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", transactionTypeDetails=" + transactionTypeDetails +
-                '}';
-    }
-
     /**
      * TODO - documentation
      * */
@@ -217,16 +198,6 @@ public class FidorTransaction {
 
         public void setRemoteBic(String remoteBic) {
             this.remoteBic = remoteBic;
-        }
-
-        @Override
-        public String toString() {
-            return "TransactionTypeDetails{" +
-                    "sepaCreditTransferId='" + sepaCreditTransferId + '\'' +
-                    ", remoteName='" + remoteName + '\'' +
-                    ", remoteIban='" + remoteIban + '\'' +
-                    ", remoteBic='" + remoteBic + '\'' +
-                    '}';
         }
     }
 }

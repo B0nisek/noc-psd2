@@ -266,34 +266,4 @@ public class FidorCustomer {
     public void setVerified(boolean verified) {
         isVerified = verified;
     }
-
-    @Override
-    public String toString() {
-        return "FidorCustomer{" +
-                "id='" + id + '\'' +
-                ", customerName='" + customerName + '\'' +
-                ", email='" + email + '\'' +
-                ", createdAt=" + createdAt +
-                ", lastSignInAt=" + lastSignInAt +
-                ", updatedAt=" + updatedAt +
-                ", city='" + city + '\'' +
-                ", country='" + country + '\'' +
-                ", fax='" + fax + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", postalCode='" + postalCode + '\'' +
-                ", street='" + street + '\'' +
-                ", streetNumber='" + streetNumber + '\'' +
-                ", birthday=" + birthday +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", maidenName='" + maidenName + '\'' +
-                ", nick='" + nick + '\'' +
-                ", title='" + title + '\'' +
-                ", gender='" + gender + '\'' +
-                ", maritalStatus='" + maritalStatus + '\'' +
-                ", nationality='" + nationality + '\'' +
-                ", religion='" + religion + '\'' +
-                ", isVerified=" + isVerified +
-                '}';
-    }
 }
