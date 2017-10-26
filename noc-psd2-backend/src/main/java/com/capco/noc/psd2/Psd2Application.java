@@ -13,6 +13,8 @@ import com.capco.noc.psd2.server.bbva.domain.BbvaUser;
 import com.capco.noc.psd2.server.bbva.repo.BbvaAccountRepository;
 import com.capco.noc.psd2.server.bbva.repo.BbvaTransactionRepository;
 import com.capco.noc.psd2.server.bbva.repo.BbvaUserRepository;
+import com.capco.noc.psd2.server.erste.repo.ErsteAccountRepository;
+import com.capco.noc.psd2.server.erste.repo.ErsteTransactionRepository;
 import com.capco.noc.psd2.server.fidor.domain.FidorCustomer;
 import com.capco.noc.psd2.server.fidor.domain.FidorAccount;
 import com.capco.noc.psd2.server.fidor.domain.FidorTransaction;
@@ -45,6 +47,10 @@ public class Psd2Application {
     private static BbvaAccountRepository bbvaAccountRepository;
     private static BbvaTransactionRepository bbvaTransactionRepository;
 
+    //Erste repositories
+    private static ErsteAccountRepository ersteAccountRepository;
+    private static ErsteTransactionRepository ersteTransactionRepository;
+
 	private final static Random random = new Random();
 
 	public static void main(String[] args) {
@@ -63,7 +69,9 @@ public class Psd2Application {
                                FidorTransactionRepository fidorTransactionRepository,
                                BbvaUserRepository bbvaUserRepository,
                                BbvaAccountRepository bbvaAccountRepository,
-                               BbvaTransactionRepository bbvaTransactionRepository) {
+                               BbvaTransactionRepository bbvaTransactionRepository,
+                               ErsteAccountRepository ersteAccountRepository,
+                               ErsteTransactionRepository ersteTransactionRepository) {
 
 		Psd2Application.accountRepository = accountRepository;
         Psd2Application.bankAccountRepository = bankAccountRepository;
@@ -74,6 +82,8 @@ public class Psd2Application {
         Psd2Application.bbvaUserRepository = bbvaUserRepository;
         Psd2Application.bbvaAccountRepository = bbvaAccountRepository;
         Psd2Application.bbvaTransactionRepository = bbvaTransactionRepository;
+        Psd2Application.ersteAccountRepository = ersteAccountRepository;
+        Psd2Application.ersteTransactionRepository = ersteTransactionRepository;
 
 		return (args) -> {
 		    initDomainModel();
