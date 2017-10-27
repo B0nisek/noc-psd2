@@ -13,6 +13,9 @@ import com.capco.noc.psd2.server.bbva.domain.BbvaUser;
 import com.capco.noc.psd2.server.bbva.repo.BbvaAccountRepository;
 import com.capco.noc.psd2.server.bbva.repo.BbvaTransactionRepository;
 import com.capco.noc.psd2.server.bbva.repo.BbvaUserRepository;
+import com.capco.noc.psd2.server.erste.domain.ErsteAccount;
+import com.capco.noc.psd2.server.erste.domain.ErsteAccountBalance;
+import com.capco.noc.psd2.server.erste.domain.ErsteTransaction;
 import com.capco.noc.psd2.server.erste.repo.ErsteAccountRepository;
 import com.capco.noc.psd2.server.erste.repo.ErsteTransactionRepository;
 import com.capco.noc.psd2.server.fidor.domain.FidorCustomer;
@@ -89,6 +92,7 @@ public class Psd2Application {
 		    initDomainModel();
 		    initFidor();
 		    initBbva();
+		    initErste();
 		};
 	}
 
@@ -236,6 +240,46 @@ public class Psd2Application {
         generateRandomBbvaTransactions(20, bbvaAccount.getId());
     }
 
+    private static void initErste(){
+        ErsteAccount ersteAccount = new ErsteAccount();
+        ersteAccount.setUserId("johndoe");
+        ersteAccount.setAlias("moj osobny ucet s kasickou");
+        ersteAccount.setType("CURRENT");
+        ersteAccount.setSubtype("CURRENT_ACCOUNT");
+        ersteAccount.setProductI18N("Osobní účet ČS II");
+        ersteAccount.setProduct("54");
+
+        ErsteAccount.AccountNumber accountNumber = new ErsteAccount.AccountNumber();
+        accountNumber.setNumber("1019382023");
+        accountNumber.setBankCode("0800");
+        accountNumber.setCountryCode("CZ");
+        accountNumber.setCzIban("CZ0708000000001019382023");
+        accountNumber.setCzBic("GIBACZPX");
+        ersteAccount.setAccountNumber(accountNumber);
+
+        ErsteAccountBalance balance = new ErsteAccountBalance();
+        balance.setValue(8965200);
+        balance.setPrecision((byte)2);
+        balance.setCurrency("CZK");
+        ersteAccount.setBalance(balance);
+
+        ErsteAccountBalance disposable = new ErsteAccountBalance();
+        disposable.setValue(0);
+        disposable.setPrecision((byte)2);
+        disposable.setCurrency("CZK");
+        ersteAccount.setBalance(disposable);
+
+        ErsteAccountBalance overdraft = new ErsteAccountBalance();
+        overdraft.setValue(0);
+        overdraft.setPrecision((byte)2);
+        overdraft.setCurrency("CZK");
+        ersteAccount.setBalance(overdraft);
+        ersteAccount.setOverdraftDueDate(generateRandomDate());
+        ersteAccountRepository.save(ersteAccount);
+
+        generateRandomErsteTransactions(35, ersteAccount.getId());
+    }
+
     private static void generateRandomFidorTransactions(int num, String accountId){
         for(int i = 0; i < num; i++){
             FidorTransaction fidorTransaction = new FidorTransaction();
@@ -294,6 +338,50 @@ public class Psd2Application {
             bbvaTransaction.setAttachedInfo(attachedInfo);
 
             bbvaTransactionRepository.save(bbvaTransaction);
+        }
+    }
+
+    private static void generateRandomErsteTransactions(int num, String accountId){
+        for(int i = 0; i < num; i++){
+            ErsteTransaction ersteTransaction = new ErsteTransaction();
+            ersteTransaction.setAccountId(accountId);
+            ersteTransaction.setBookingDate(generateRandomDate());
+            ersteTransaction.setCardNumber("0");
+            ersteTransaction.setConstantSymbol("0558");
+            ersteTransaction.setDescription("domácí platba");
+            ersteTransaction.setDescriptionEditable(false);
+            ersteTransaction.setPayeeNote("note for payee");
+            ersteTransaction.setPayerNote("note for payer");
+            ersteTransaction.setSpecificSymbol("55");
+            ersteTransaction.setTransactionType("54");
+            ersteTransaction.setValuationDate(generateRandomDate());
+            ersteTransaction.setVariableSymbol("0000000009");
+
+
+            int value = 1000 + (500000 - 1000) * random.nextInt();
+            ErsteAccountBalance amount = new ErsteAccountBalance();
+            amount.setValue(value);
+            amount.setPrecision((byte)2);
+            amount.setCurrency("CZK");
+            ersteTransaction.setAmount(amount);
+
+            ErsteAccountBalance amountSender = new ErsteAccountBalance();
+            amountSender.setValue(value);
+            amountSender.setPrecision((byte)2);
+            amountSender.setCurrency("CZK");
+            ersteTransaction.setAmountSender(amountSender);
+
+            ErsteTransaction.AccountParty accountParty = new ErsteTransaction.AccountParty();
+            accountParty.setAccountNumber("2812275553");
+            accountParty.setAccountPrefix("0");
+            accountParty.setBankCode("0800");
+            accountParty.setBic("GIBACZPX");
+            accountParty.setIban("CZ2908000000002812275553");
+            accountParty.setPartyInfo("Peter Maly");
+            accountParty.setPartyDescription("2812275553/0800");
+            ersteTransaction.setAccountParty(accountParty);
+
+            ersteTransactionRepository.save(ersteTransaction);
         }
     }
 

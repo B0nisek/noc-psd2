@@ -1,5 +1,6 @@
 package com.capco.noc.psd2.server.fidor.service;
 
+import com.capco.noc.psd2.server.RestResponseWrapper;
 import com.capco.noc.psd2.server.fidor.domain.FidorAccount;
 import com.capco.noc.psd2.server.fidor.domain.FidorCustomer;
 import com.capco.noc.psd2.server.fidor.domain.FidorTransaction;
@@ -35,57 +36,74 @@ public class FidorRestController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/customer/{name}")
-    ResponseEntity<FidorCustomer> getCustomer(@PathVariable String name){
+    ResponseEntity<RestResponseWrapper<FidorCustomer>> getCustomer(@PathVariable String name){
         FidorCustomer customer = fidorCustomerRepository.findByCustomerName(name);
 
         if(customer == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "Invalid customer")), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(customer, HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseWrapper<>(
+                new RestResponseWrapper.Result(HttpStatus.OK.value(), "OK"), customer), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/customer/{name}/accounts")
-    ResponseEntity<List<FidorAccount>> getAccounts(@PathVariable String name){
+    ResponseEntity<RestResponseWrapper<List<FidorAccount>>> getAccounts(@PathVariable String name){
         List<FidorAccount> accounts = fidorAccountRepository.findByFidorCustomersCustomerName(name);
 
         if(accounts == null || accounts.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "Invalid customer")), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(accounts, HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseWrapper<>(
+                new RestResponseWrapper.Result(HttpStatus.OK.value(), "OK"), accounts), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/account/{iban}")
-    ResponseEntity<FidorAccount> getAccountByIban(@PathVariable String iban){
+    ResponseEntity<RestResponseWrapper<FidorAccount>> getAccountByIban(@PathVariable String iban){
         FidorAccount account = fidorAccountRepository.findByIban(iban);
 
         if(account == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "Invalid iban")), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(account, HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseWrapper<>(
+                new RestResponseWrapper.Result(HttpStatus.OK.value(), "OK"), account), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/account/{iban}/transactions")
-    ResponseEntity<List<FidorTransaction>> getAccountTransactions(@PathVariable String iban){
+    ResponseEntity<RestResponseWrapper<List<FidorTransaction>>> getAccountTransactions(@PathVariable String iban){
         FidorAccount fidorAccount = fidorAccountRepository.findByIban(iban);
 
         if(fidorAccount == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "Invalid iban")), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(fidorTransactionRepository.findByAccountId(fidorAccount.getId()), HttpStatus.OK);
+        List<FidorTransaction> transactions = fidorTransactionRepository.findByAccountId(fidorAccount.getId());
+        if(transactions == null || transactions.isEmpty()){
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "No transactions found")), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(new RestResponseWrapper<>(
+                new RestResponseWrapper.Result(HttpStatus.OK.value(), "OK"), transactions), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/transaction/{transactionId}")
-    ResponseEntity<FidorTransaction> getTransactionById(@PathVariable String transactionId){
+    ResponseEntity<RestResponseWrapper<FidorTransaction>> getTransactionById(@PathVariable String transactionId){
         FidorTransaction transaction = fidorTransactionRepository.findOne(transactionId);
 
         if(transaction == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "No such transaction")), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(transaction, HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseWrapper<>(
+                new RestResponseWrapper.Result(HttpStatus.OK.value(), "OK"), transaction), HttpStatus.OK);
+
     }
 }

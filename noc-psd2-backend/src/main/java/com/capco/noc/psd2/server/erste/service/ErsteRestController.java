@@ -1,5 +1,6 @@
 package com.capco.noc.psd2.server.erste.service;
 
+import com.capco.noc.psd2.server.RestResponseWrapper;
 import com.capco.noc.psd2.server.erste.domain.ErsteAccount;
 import com.capco.noc.psd2.server.erste.domain.ErsteTransaction;
 import com.capco.noc.psd2.server.erste.repo.ErsteAccountRepository;
@@ -30,47 +31,73 @@ public class ErsteRestController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{userId}/my/accounts")
-    ResponseEntity<List<ErsteAccount>> getUserAccounts(@PathVariable String userId){
+    ResponseEntity<RestResponseWrapper<List<ErsteAccount>>> getUserAccounts(@PathVariable String userId){
         List<ErsteAccount> accounts = ersteAccountRepository.findByUserId(userId);
         if(accounts == null || accounts.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "Invalid user ID")), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(accounts, HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseWrapper<>(
+                new RestResponseWrapper.Result(HttpStatus.OK.value(), "OK"), accounts), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{userId}/my/accounts/{accountId}")
-    ResponseEntity<ErsteAccount> getUserAccount(@PathVariable String userId, @PathVariable String accountId){
+    ResponseEntity<RestResponseWrapper<ErsteAccount>> getUserAccount(@PathVariable String userId, @PathVariable String accountId){
         ErsteAccount account = ersteAccountRepository.findOne(accountId);
         if(account == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "Invalid account ID")), HttpStatus.BAD_REQUEST);
         }
 
         if(!userId.equals(account.getUserId())){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "Invalid user ID")), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(account, HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseWrapper<>(
+                new RestResponseWrapper.Result(HttpStatus.OK.value(), "OK"), account), HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{userId}/my/accounts/ib/{iban}")
+    ResponseEntity<RestResponseWrapper<ErsteAccount>> getUserAccountByIban(@PathVariable String userId, @PathVariable String iban){
+        ErsteAccount account = ersteAccountRepository.findByAccountNumberCzIban(iban);
+        if(account == null){
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "No account for provided IBAN.")), HttpStatus.BAD_REQUEST);
+        }
+
+        if(!userId.equals(account.getUserId())){
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "Invalid user ID")), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(new RestResponseWrapper<>(
+                new RestResponseWrapper.Result(HttpStatus.OK.value(), "OK"), account), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{userId}/my/accounts/{accountId}/transactions")
-    ResponseEntity<List<ErsteTransaction>> getAccountTransactions(@PathVariable String userId, @PathVariable String accountId){
+    ResponseEntity<RestResponseWrapper<List<ErsteTransaction>>> getAccountTransactions(@PathVariable String userId, @PathVariable String accountId){
         ErsteAccount account = ersteAccountRepository.findOne(accountId);
 
         if(account == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "Invalid account ID")), HttpStatus.BAD_REQUEST);
         }
 
         if(!userId.equals(account.getUserId())){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "Invalid user ID")), HttpStatus.BAD_REQUEST);
         }
 
         List<ErsteTransaction> transactions = ersteTransactionRepository.findByAccountId(accountId);
         if(transactions == null || transactions.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new RestResponseWrapper<>(
+                    new RestResponseWrapper.Result(HttpStatus.BAD_REQUEST.value(), "No transactions found")), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(transactions, HttpStatus.OK);
+        return new ResponseEntity<>(new RestResponseWrapper<>(
+                new RestResponseWrapper.Result(HttpStatus.OK.value(), "OK"), transactions), HttpStatus.OK);
     }
 
 }

@@ -8,4 +8,6 @@ import java.util.List;
 public interface ErsteAccountRepository extends CrudRepository<ErsteAccount, String> {
 
     List<ErsteAccount> findByUserId(String userId);
+
+    ErsteAccount findByAccountNumberCzIban(String iban);
 }

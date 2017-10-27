@@ -8,4 +8,6 @@ import java.util.List;
 public interface BbvaAccountRepository extends CrudRepository<BbvaAccount, String>{
 
     List<BbvaAccount> findByUserId(String userId);
+
+    BbvaAccount findByFormatsIban(String iban);
 }
