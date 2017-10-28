@@ -1,5 +1,7 @@
 package com.capco.noc.psd2.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,10 @@ public class Account {
     @OneToMany(mappedBy = "ownerAccount", fetch = FetchType.EAGER)
     private List<BankAccount> bankAccounts = new ArrayList<>();
 
+    @JsonIgnore
     private String username;
+
+    @JsonIgnore
     private String password;
 
     public Account() {}
