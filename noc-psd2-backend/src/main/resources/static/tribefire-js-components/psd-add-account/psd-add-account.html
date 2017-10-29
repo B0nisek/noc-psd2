@@ -1,0 +1,111 @@
+<md-card>
+    <md-card-content>
+        <div flex>
+            <div flex layout="column">
+                <md-button flex md-no-ink class="md-raised md-primary" ng-click="vm.addAccount()" ng-if="!vm.isActive">
+                    {{vm.buttonText}}
+                </md-button>
+                <div flex ng-if="vm.isActive" id="addAccount">
+                    <md-tabs flex md-dynamic-height md-selected="vm.selectedIndex">
+                        <md-tab label="{{vm.stages[0]}}" ng-disabled="(vm.selectedIndex == 0) ? false : true">
+                            <div>
+                                <form name="accountForm">
+                                <div flex layout="column">
+                                        <md-input-container flex>
+                                            <label>IBAN</label>
+                                            <input ng-model="vm.account.iban" name="iban" required ng-minlength="26" ng-maxlength="34" ng-pattern="/^[A-Z]{2}.*/">
+                                            <div ng-messages="accountForm.iban.$error">
+                                                <div ng-message="required">IBAN is required.</div>
+                                                <div ng-message="pattern">Incorrect IBAN format.First 2 characters must represent country code</div>
+                                                <div ng-message="minlength">Incorrect IBAN format.It must be at least 26 characters long. Please fix it.</div>
+                                                <div ng-message="maxlength">Incorrect IBAN format.It must be 34 characters long at max. Please fix it.</div>
+                                            </div>
+                                        </md-input-container>
+                                    </div>
+                                    <div flex layout="column">
+                                        <md-input-container>
+                                            <label>Account alias</label>
+                                            <input ng-model="vm.account.alias">
+                                        </md-input-container>
+                                    </div>
+                                </form>
+                                <div layout="row">
+                                    <div flex>
+                                        <md-button md-no-ink class="md-raised md-primary" ng-click="vm.addAccount()">
+                                            Cancel
+                                        </md-button>
+                                    </div>
+                                    <div flex="80"></div>
+                                    <div flex align="right">
+                                        <md-button md-no-ink class="md-raised md-primary" ng-click="vm.nextTab()"
+                                                   ng-disabled="!vm.account.iban.length || !vm.account.alias.length">
+                                            NEXT
+                                        </md-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </md-tab>
+                        <md-tab label="{{vm.stages[1]}}" ng-disabled="(vm.selectedIndex == 1) ? false : true">
+                            <div>
+                                <div>
+                                    <p>{{account.alias}}</p>
+                                    <p>{{account.iban}}</p>
+                                </div>
+                                <div flex layout="column">
+                                    <md-input-container>
+                                        <label>Username</label>
+                                        <input ng-model="vm.account.username">
+                                    </md-input-container>
+                                </div>
+                                <div flex layout="column">
+                                    <md-input-container>
+                                        <label>Password</label>
+                                        <input ng-model="vm.account.pwd" type="password">
+                                    </md-input-container>
+                                </div>
+                                <div layout="row">
+                                    <div flex>
+                                        <md-button md-no-ink class="md-raised md-primary" ng-click="vm.previousTab()">
+                                            BACK
+                                        </md-button>
+                                    </div>
+                                    <div flex="80"></div>
+                                    <div flex align="right">
+                                        <md-button md-no-ink class="md-raised md-primary" ng-click="vm.nextTab()"
+                                                   ng-disabled="!vm.account.username.length || !vm.account.pwd.length">
+                                            NEXT
+                                        </md-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </md-tab>
+                        <md-tab label="{{vm.stages[2]}}" ng-disabled="(vm.selectedIndex == 2) ? false : true">
+                            <div>
+                                <div flex layout="column">
+                                    <md-input-container>
+                                        <label>TAN</label>
+                                        <input ng-model="vm.account.tan">
+                                    </md-input-container>
+                                </div>
+                                <div layout="row">
+                                    <div flex>
+                                        <md-button md-no-ink class="md-raised md-primary" ng-click="vm.previousTab()">
+                                            BACK
+                                        </md-button>
+                                    </div>
+                                    <div flex="80"></div>
+                                    <div flex align="right">
+                                        <md-button md-no-ink class="md-raised md-primary" ng-click="vm.submit()"
+                                                   ng-disabled="!vm.account.tan.length">Submit
+                                        </md-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </md-tab>
+                    </md-tabs>
+                </div>
+            </div>
+        </div>
+    </md-card-content>
+
+</md-card>

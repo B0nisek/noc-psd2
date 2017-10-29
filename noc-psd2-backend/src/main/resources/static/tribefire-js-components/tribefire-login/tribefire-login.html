@@ -1,0 +1,24 @@
+<md-content class="page-login" layout="row" layout-align="space-around" ng-cloak="ng-cloak">
+    <md-card>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h3> Login </h3>
+            </div>
+        </md-toolbar>
+        <div layout="column" layout-align="center center" style="min-width: 300px; min-height: 260px;">
+            <div ng-if="logginError">
+                <span class="md-title" style="color: red">Wrong credentials, try again</span>
+            </div>
+
+            <md-input-container style="width: 90%">
+                <label>Username</label>
+                <input ng-model="username">
+            </md-input-container>
+            <md-input-container style="width: 90%">
+                <label>Password</label>
+                <input ng-model="password" type="password">
+            </md-input-container>
+            <md-button class="md-raised md-primary" ng-click="doLogin()">Login</md-button>
+        </div>
+    </md-card>
+</md-content>

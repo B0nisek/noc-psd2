@@ -1,0 +1,56 @@
+<div ng-repeat="account in ctrl.psdAccounts">
+	<md-card>
+
+		<md-card-content>
+			<div layout="row" flex style="padding-bottom: 5px;">
+				<md-button id="userProfileFab" aria-label="User profile" class="md-fab" style="background-image: url(media/account.png) !important; background-color: white;background-size: 30px 30px; background-repeat: no-repeat;background-position: center;">
+            	</md-button>
+				<div flex>
+					<p class="md-headline" style="padding-top: 15px">{{account.alias}}</p><br>
+				</div>
+				<div flex>
+					<p class="md-headline" flex style="padding-top: 15px;text-align: right;">Balance: <span style="color:green;">{{account.balance | number}}</span> €</p>
+				</div>
+			</div>
+			
+			<div layout="row" class="customDivide">
+				<div flex>
+					<p><b>IBAN:</b> {{account.iban}}</p>
+					<p ng-if="account.bank"><b>Bank:</b> {{account.bank}}</p>
+				</div>
+			</div>
+
+		    <div layout="row" flex ng-if="!account.transActive" class="customDivide">
+				<div 
+					flex layout="column">
+				    <md-button 
+				    	flex 
+				    	md-no-ink 
+				    	class="md-raised" ng-click="ctrl.showTransactions(account)">
+	                    Show Account Transactions
+	                </md-button>
+				</div>
+		    </div>
+
+			<div ng-if="account.transActive" class="customDivide">
+				<tf-table
+					json-array="account.transactions"
+					paging="5"
+					show-properties="transactionId,description"
+					tf-debug="false"
+					ng-if="account.transActive">
+				</tf-table>
+				<div 
+					flex layout="column">
+				    <md-button 
+				    	flex 
+				    	md-no-ink 
+				    	class="md-raised" ng-click="ctrl.hideAllTransactions()">
+	                    Hide Account Transactions
+	                </md-button>
+				</div>
+			</div>
+
+		</md-card-content>
+	</md-card>
+</div>

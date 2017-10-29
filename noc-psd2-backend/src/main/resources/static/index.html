@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>PSD 2 - Account Management</title>
+
+	<!-- External Stylesheets -->
+	<link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+	<link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="//rawgit.com/daniel-nagy/md-data-table/master/dist/md-data-table.css">
+	<!-- App Stylesheet -->
+	<link rel="stylesheet" href="css/style.css">
+
+	<!-- Angular Material requires Angular.js Libraries -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-aria.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-messages.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+	<script src="//cdn.jsdelivr.net/angular-material-icons/0.6.0/angular-material-icons.min.js"></script>
+
+	<!-- angular data table -->
+	<script src="//rawgit.com/daniel-nagy/md-data-table/master/dist/md-data-table.js"></script>
+
+</head>
+
+<body ng-app="tfTableTestApp" ng-controller="mainController">
+	<tf-header
+		on-logout="tfLogoutCallback"
+		auth-token="authToken"
+        ng-hide="!loggedIn"
+    >
+	</tf-header>
+
+	<tf-login
+		on-login="tfLoginCallBack"
+		auto-login="false"
+		ng-hide="loggedIn">
+	</tf-login>
+
+	<p ng-if="userError">
+		Error fetching accounts for users
+	</p>
+
+	<div layout="row" ng-if="loggedIn">
+		<div flex></div>
+		<div flex="80">
+			<psd-accounts
+				psd-accounts="owner.bankAccounts"
+				ng-hide="!owner">
+			</psd-accounts>
+
+			<!--<psd-add-account-->
+				<!--add-new-account-callback="addNewAccount"-->
+				<!--ng-hide="!loggedIn"-->
+				<!--stage-names="IBAN,Credentials,Authenticate">      				-->
+			<!--</psd-add-account>-->
+
+		</div>
+		<div flex></div>
+	</div>
+
+	<!-- Load Tribefire Component Dependencies -->
+	<script src="tribefire-js-components/psd-add-account/psd-add-account.js"></script>
+	<script src="tribefire-js-components/psd-accounts/psd-accounts.js"></script>
+
+    <!-- Load App -->
+	<script src="app.js"></script>
+
+	<!-- Load Tribefire Component Dependencies -->
+	<script src="tribefire-js-components/tribefire-login/tribefire-login.js"></script>
+	<script src="tribefire-js-components/tribefire-header/tribefire-header.js"></script>
+	<script src="tribefire-js-components/tfTable/tableComponent.js"></script>
+</body>
+</html>

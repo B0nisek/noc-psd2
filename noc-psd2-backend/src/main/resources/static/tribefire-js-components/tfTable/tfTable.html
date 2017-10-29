@@ -1,0 +1,54 @@
+<div flex>
+
+    <div>
+        <p><b>Transactions:</b></p>
+    </div>
+
+    <!--<div ng-hide="true">-->
+        <!--{{(filteredItems = (propertyList | filter: filterName))}}-->
+    <!--</div>-->
+
+    <md-table-container>
+        <table md-table>
+            <thead md-head md-order="tableMetaData.order" md-on-reorder="onReorder">
+                <tr md-row>
+
+                    <!-- Date column -->
+                    <th md-column md-order-by="date">Date</th>
+
+                    <th ng-show="value" md-column
+                        ng-repeat="(key, value) in entityProperties"
+                        md-order-by="{{key}}"
+                        style="padding: 0 24px;">{{key}}</th>
+
+                    <th md-column md-order-by="amount">Amount</th>
+                </tr>
+            </thead>
+
+            <tbody md-body>
+                <tr md-row ng-repeat="item in propertyList | orderBy: tableMetaData.order | limitTo: tableMetaData.paging : (tableMetaData.page -1) * tableMetaData.paging">
+
+                    <!-- Date row value -->
+                    <td layout-margin md-cell>{{item.date | date:'medium'}}</td>
+
+                    <td md-cell layout-margin ng-show="entityProperties[key]"
+                        ng-repeat="(key, value) in item"
+                        style="padding: 0 24px;"
+                        ng-style="colorCoding(value)">{{value}}</td>
+
+                    <td layout-margin md-cell ng-style="colorCoding(item.amount)">{{item.amount | number:2}}</td>
+
+                </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+
+    <md-table-pagination md-limit="tableMetaData.paging" md-page="tableMetaData.page" md-total="{{propertyList.length}}" md-page-select="true" md-boundary-links="true"></md-table-pagination>
+
+</div>
+
+<!--
+Copyright 2017 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+-->

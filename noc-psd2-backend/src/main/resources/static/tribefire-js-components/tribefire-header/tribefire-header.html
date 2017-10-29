@@ -1,0 +1,32 @@
+<div class="header" layout="row">
+    <div>
+      <img src="./media/bt-capco-logo.png" class="headerImg" 
+        style="padding-top: 20px; padding-left: 8px">
+    </div>
+    <p flex style="padding-top: 23px; color: rgb(79, 102, 113); font-size: 20px;" > &nbsp;MultiBank Account Information</p>
+
+    <!-- user profile fab -->
+    <md-fab-speed-dial md-direction="left" md-open="false" class="md-scale user-profile-top-right">
+
+        <md-fab-trigger>
+            <md-button id="userProfileFab" aria-label="User profile" class="md-fab md-hue-2" style="background-image: url(media/johndoe.PNG) !important; background-size: cover;">
+            </md-button>
+            <md-tooltip>
+                John Doe
+            </md-tooltip>
+        </md-fab-trigger>
+
+        <md-fab-actions>
+            <!--<md-button href="#" aria-label="Edit User Profile" class="md-fab md-raised md-mini">-->
+                <!--<md-icon md-svg-src="media/ic_mode_edit_black_24px.svg" aria-label="Edit User Profile"></md-icon>-->
+                <!--<md-tooltip>-->
+                    <!--Edit User Profile-->
+                <!--</md-tooltip>-->
+            <!--</md-button>-->
+            <md-button ng-click="doLogout()" href="#" aria-label="User Activity Statistics" class="md-fab md-raised md-mini">
+                <md-icon md-svg-src="media/ic_power_settings_new_black_24px.svg" aria-label="Logout"></md-icon>
+                <md-tooltip>Log out</md-tooltip>
+            </md-button>
+        </md-fab-actions>
+    </md-fab-speed-dial>
+</div>
