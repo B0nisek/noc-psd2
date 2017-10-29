@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -51,7 +49,7 @@ public class AppRestController {
         String authToken = UUID.randomUUID().toString();
         loggedInUserMap.put(authToken, account.getUsername());
 
-        return new ResponseEntity<>(authToken, HttpStatus.OK);
+        return new ResponseEntity<>("{\"token\": \""+authToken+"\"}" , HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/logout")
