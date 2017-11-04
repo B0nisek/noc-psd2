@@ -2,7 +2,6 @@ package com.capco.noc.psd2;
 
 import com.capco.noc.psd2.domain.Account;
 import com.capco.noc.psd2.domain.BankAccount;
-import com.capco.noc.psd2.domain.Currency;
 import com.capco.noc.psd2.domain.Transaction;
 import com.capco.noc.psd2.repository.AccountRepository;
 import com.capco.noc.psd2.repository.BankAccountRepository;
@@ -24,6 +23,8 @@ import com.capco.noc.psd2.server.fidor.domain.FidorTransaction;
 import com.capco.noc.psd2.server.fidor.repo.FidorAccountRepository;
 import com.capco.noc.psd2.server.fidor.repo.FidorCustomerRepository;
 import com.capco.noc.psd2.server.fidor.repo.FidorTransactionRepository;
+import com.capco.noc.psd2.service.client.BbvaRestClient;
+import com.capco.noc.psd2.service.client.FidorRestClient;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,6 +35,8 @@ import java.util.*;
 
 @SpringBootApplication
 public class Psd2Application {
+
+    private static final String USER_NAME = "johndoe";
 
     //Domain repositories
 	private static AccountRepository accountRepository;
@@ -53,6 +56,10 @@ public class Psd2Application {
     //Erste repositories
     private static ErsteAccountRepository ersteAccountRepository;
     private static ErsteTransactionRepository ersteTransactionRepository;
+
+    //Rest clients
+    private static FidorRestClient fidorRestClient;
+    private static BbvaRestClient bbvaRestClient;
 
 	private final static Random random = new Random();
 
@@ -74,7 +81,9 @@ public class Psd2Application {
                                BbvaAccountRepository bbvaAccountRepository,
                                BbvaTransactionRepository bbvaTransactionRepository,
                                ErsteAccountRepository ersteAccountRepository,
-                               ErsteTransactionRepository ersteTransactionRepository) {
+                               ErsteTransactionRepository ersteTransactionRepository,
+                               FidorRestClient fidorRestClient,
+                               BbvaRestClient bbvaRestClient) {
 
 		Psd2Application.accountRepository = accountRepository;
         Psd2Application.bankAccountRepository = bankAccountRepository;
@@ -88,68 +97,114 @@ public class Psd2Application {
         Psd2Application.ersteAccountRepository = ersteAccountRepository;
         Psd2Application.ersteTransactionRepository = ersteTransactionRepository;
 
+        Psd2Application.fidorRestClient = fidorRestClient;
+        Psd2Application.bbvaRestClient = bbvaRestClient;
+
 		return (args) -> {
 		    initDomainModel();
 		    initFidor();
 		    initBbva();
 		    initErste();
+		    retrieveAccounts();
 		};
 	}
+	
+	private static void retrieveAccounts(){
+	    Account ownerAccount = accountRepository.findByUsername(USER_NAME);
+
+        //Retrieve and persist Fidor accounts
+        List<BankAccount> fidorAccounts = fidorRestClient.getAccounts(USER_NAME);
+        for(BankAccount bankAccount: fidorAccounts){
+            bankAccount.setOwnerAccount(ownerAccount);
+            bankAccountRepository.save(bankAccount);
+
+            List<Transaction> transactions = fidorRestClient.getAccountTransactions(bankAccount.getIban());
+            for(Transaction transaction: transactions){
+                transaction.setBankAccount(bankAccount);
+                transactionRepository.save(transaction);
+            }
+            bankAccount.setTransactions(transactions);
+            bankAccountRepository.save(bankAccount);
+        }
+
+        ownerAccount.getBankAccounts().addAll(fidorAccounts);
+        accountRepository.save(ownerAccount);
+
+        //Retrieve and persist BBVA accounts
+        List<BankAccount> bbvaAccounts = bbvaRestClient.getUserAccounts(USER_NAME);
+        for(BankAccount bankAccount: bbvaAccounts){
+            bankAccount.setOwnerAccount(ownerAccount);
+            bankAccountRepository.save(bankAccount);
+
+            List<Transaction> transactions = bbvaRestClient.getUserAccountTransactions(USER_NAME, bankAccount.getExternalAccountId());
+            for(Transaction transaction: transactions){
+                transaction.setBankAccount(bankAccount);
+                transactionRepository.save(transaction);
+            }
+            bankAccount.setTransactions(transactions);
+            bankAccountRepository.save(bankAccount);
+        }
+
+        ownerAccount.getBankAccounts().addAll(bbvaAccounts);
+        accountRepository.save(ownerAccount);
+
+        System.out.println();
+    }
 
 	private static void initDomainModel(){
         Account account = new Account();
-        account.setUsername("johndoe");
+        account.setUsername(USER_NAME);
         account.setPassword("12345");
         accountRepository.save(account);
 
-        BankAccount bankAccount1 = new BankAccount();
-        bankAccount1.setAccountHolderName("John Doe");
-        bankAccount1.setAlias("Checking account");
-        bankAccount1.setBank("First International Bank, GmbH.");
-        bankAccount1.setIban("AT174481184921362929");
-        bankAccount1.setBalance(2389.45);
-        bankAccount1.setCurrency(Currency.EUR);
-        bankAccount1.setOwnerAccount(account);
-        bankAccountRepository.save(bankAccount1);
-        bankAccount1.setTransactions(generateRandomTransactions(20, bankAccount1));
-
-        BankAccount bankAccount2 = new BankAccount();
-        bankAccount2.setAccountHolderName("John Doe");
-        bankAccount2.setAlias("Checking account 2");
-        bankAccount2.setBank("BBVA");
-        bankAccount2.setIban("ES174481181234362929");
-        bankAccount2.setBalance(1238.45);
-        bankAccount2.setCurrency(Currency.EUR);
-        bankAccount2.setOwnerAccount(account);
-        bankAccountRepository.save(bankAccount2);
-        bankAccount2.setTransactions(generateRandomTransactions(15, bankAccount2));
-
-        BankAccount bankAccount3 = new BankAccount();
-        bankAccount3.setAccountHolderName("John Doe");
-        bankAccount3.setAlias("Checking account");
-        bankAccount3.setBank("Deutsche Bank, GmbH.");
-        bankAccount3.setIban("DE1744567894921362929");
-        bankAccount3.setBalance(189.43);
-        bankAccount3.setCurrency(Currency.EUR);
-        bankAccount3.setOwnerAccount(account);
-        bankAccountRepository.save(bankAccount3);
-        bankAccount3.setTransactions(generateRandomTransactions(25, bankAccount3));
-
-        account.setBankAccounts(new ArrayList<BankAccount>(){{
-            add(bankAccount1);
-            add(bankAccount2);
-            add(bankAccount3);
-        }});
-
-        bankAccountRepository.save(bankAccount1);
-        bankAccountRepository.save(bankAccount2);
-        bankAccountRepository.save(bankAccount3);
-        accountRepository.save(account);
+//        BankAccount bankAccount1 = new BankAccount();
+//        bankAccount1.setAccountHolderName("John Doe");
+//        bankAccount1.setAlias("Checking account");
+//        bankAccount1.setBank("First International Bank, GmbH.");
+//        bankAccount1.setIban("AT174481184921362929");
+//        bankAccount1.setBalance(2389.45);
+//        bankAccount1.setCurrency(Currency.EUR);
+//        bankAccount1.setOwnerAccount(account);
+//        bankAccountRepository.save(bankAccount1);
+//        bankAccount1.setTransactions(generateRandomTransactions(20, bankAccount1));
+//
+//        BankAccount bankAccount2 = new BankAccount();
+//        bankAccount2.setAccountHolderName("John Doe");
+//        bankAccount2.setAlias("Checking account 2");
+//        bankAccount2.setBank("BBVA");
+//        bankAccount2.setIban("ES174481181234362929");
+//        bankAccount2.setBalance(1238.45);
+//        bankAccount2.setCurrency(Currency.EUR);
+//        bankAccount2.setOwnerAccount(account);
+//        bankAccountRepository.save(bankAccount2);
+//        bankAccount2.setTransactions(generateRandomTransactions(15, bankAccount2));
+//
+//        BankAccount bankAccount3 = new BankAccount();
+//        bankAccount3.setAccountHolderName("John Doe");
+//        bankAccount3.setAlias("Checking account");
+//        bankAccount3.setBank("Deutsche Bank, GmbH.");
+//        bankAccount3.setIban("DE1744567894921362929");
+//        bankAccount3.setBalance(189.43);
+//        bankAccount3.setCurrency(Currency.EUR);
+//        bankAccount3.setOwnerAccount(account);
+//        bankAccountRepository.save(bankAccount3);
+//        bankAccount3.setTransactions(generateRandomTransactions(25, bankAccount3));
+//
+//        account.setBankAccounts(new ArrayList<BankAccount>(){{
+//            add(bankAccount1);
+//            add(bankAccount2);
+//            add(bankAccount3);
+//        }});
+//
+//        bankAccountRepository.save(bankAccount1);
+//        bankAccountRepository.save(bankAccount2);
+//        bankAccountRepository.save(bankAccount3);
+//        accountRepository.save(account);
     }
 
     private static void initFidor(){
         FidorCustomer fidorCustomer = new FidorCustomer();
-        fidorCustomer.setCustomerName("johndoe");
+        fidorCustomer.setCustomerName(USER_NAME);
         fidorCustomer.setEmail("john.doe@mail.com");
         fidorCustomer.setCreatedAt(generateRandomDate());
         fidorCustomer.setLastSignInAt(generateRandomDate());
@@ -194,7 +249,7 @@ public class Psd2Application {
 
     private static void initBbva(){
         BbvaUser bbvaUser = new BbvaUser();
-        bbvaUser.setUserId("johndoe");
+        bbvaUser.setUserId(USER_NAME);
         bbvaUser.setFirstName("John");
         bbvaUser.setSurname("Doe");
         bbvaUser.setSecondSurname("Juanito");
@@ -223,26 +278,44 @@ public class Psd2Application {
         bbvaUser.setAddress(address);
         bbvaUserRepository.save(bbvaUser);
 
-        BbvaAccount bbvaAccount = new BbvaAccount();
-        bbvaAccount.setUserId("johndoe");
-        bbvaAccount.setAlias("My Awesome Spanish Account");
-        bbvaAccount.setType(BbvaAccount.Type.CREDIT);
-        bbvaAccount.setNumber("1785");
-        bbvaAccount.setBalance(2685.2);
-        bbvaAccount.setCurrency("EUR");
+        //Generate First Account
+        BbvaAccount bbvaAccountFirst = new BbvaAccount();
+        bbvaAccountFirst.setUserId(USER_NAME);
+        bbvaAccountFirst.setAlias("My Awesome Spanish Account");
+        bbvaAccountFirst.setType(BbvaAccount.Type.CREDIT);
+        bbvaAccountFirst.setNumber("1785");
+        bbvaAccountFirst.setBalance(2685.2);
+        bbvaAccountFirst.setCurrency("EUR");
 
         BbvaAccount.Formats formats = new BbvaAccount.Formats();
         formats.setIban("ES6968867819113534431785");
         formats.setCcc("68867819113534431785");
-        bbvaAccount.setFormats(formats);
-        bbvaAccountRepository.save(bbvaAccount);
+        bbvaAccountFirst.setFormats(formats);
+        bbvaAccountRepository.save(bbvaAccountFirst);
 
-        generateRandomBbvaTransactions(20, bbvaAccount.getId());
+        generateRandomBbvaTransactions(20, bbvaAccountFirst.getId());
+
+        //Generate secound account
+        BbvaAccount bbvaAccountSecond = new BbvaAccount();
+        bbvaAccountSecond.setUserId(USER_NAME);
+        bbvaAccountSecond.setAlias("My Spanish Consumer Loan Account");
+        bbvaAccountSecond.setType(BbvaAccount.Type.CHECKING);
+        bbvaAccountSecond.setNumber("1175");
+        bbvaAccountSecond.setBalance(4781.5);
+        bbvaAccountSecond.setCurrency("EUR");
+
+        BbvaAccount.Formats formatsSecond = new BbvaAccount.Formats();
+        formatsSecond.setIban("ES6968875699113531111175");
+        formatsSecond.setCcc("68875699113531111175");
+        bbvaAccountSecond.setFormats(formatsSecond);
+        bbvaAccountRepository.save(bbvaAccountSecond);
+
+        generateRandomBbvaTransactions(15, bbvaAccountSecond.getId());
     }
 
     private static void initErste(){
         ErsteAccount ersteAccount = new ErsteAccount();
-        ersteAccount.setUserId("johndoe");
+        ersteAccount.setUserId(USER_NAME);
         ersteAccount.setAlias("moj osobny ucet s kasickou");
         ersteAccount.setType("CURRENT");
         ersteAccount.setSubtype("CURRENT_ACCOUNT");
@@ -286,7 +359,7 @@ public class Psd2Application {
             fidorTransaction.setAccountId(accountId);
             fidorTransaction.setTransactionType("sepa_core_direct_debit");
             fidorTransaction.setSubject("Subject " + i);
-            fidorTransaction.setAmount(5 + (500 - 5) * random.nextInt());
+            fidorTransaction.setAmount(5 + (500 - 5) * random.nextInt(100));
             fidorTransaction.setCurrency("EUR");
             fidorTransaction.setBookingCode(Integer.toString(i));
             fidorTransaction.setBookingDate(generateRandomDate());
@@ -311,7 +384,7 @@ public class Psd2Application {
             bbvaTransaction.setAccountId(accountId);
             bbvaTransaction.setOperationDate(generateRandomDate());
             bbvaTransaction.setValueDate(generateRandomDate());
-            bbvaTransaction.setAmount(15 + (250 - 15) * random.nextInt());
+            bbvaTransaction.setAmount(15.0 + (250.0 - 15.0) * random.nextDouble());
             bbvaTransaction.setCurrency("EUR");
             bbvaTransaction.setDescription("Transaction-" + i + "-description");
 

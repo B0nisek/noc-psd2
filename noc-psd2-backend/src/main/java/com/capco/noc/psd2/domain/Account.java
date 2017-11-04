@@ -55,14 +55,4 @@ public class Account {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    @Override
-    public String toString() {
-        return "Account{" +
-                "id=" + id +
-                ", bankAccounts=" + bankAccounts +
-                ", email='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
 }

@@ -17,6 +17,9 @@ public class BankAccount {
     @ManyToOne
     private Account ownerAccount;
 
+    @JsonIgnore
+    private String externalAccountId;
+
     @OneToMany(mappedBy = "bankAccount", fetch = FetchType.EAGER)
     private List<Transaction> transactions = new ArrayList<>();
 
@@ -43,6 +46,14 @@ public class BankAccount {
 
     public void setOwnerAccount(Account ownerAccount) {
         this.ownerAccount = ownerAccount;
+    }
+
+    public String getExternalAccountId() {
+        return externalAccountId;
+    }
+
+    public void setExternalAccountId(String externalAccountId) {
+        this.externalAccountId = externalAccountId;
     }
 
     public List<Transaction> getTransactions() {
@@ -99,19 +110,5 @@ public class BankAccount {
 
     public void setCurrency(Currency currency) {
         this.currency = currency;
-    }
-
-    @Override
-    public String toString() {
-        return "BankAccount{" +
-                "id=" + id +
-                ", transactions=" + transactions +
-                ", accountHolderName='" + accountHolderName + '\'' +
-                ", alias='" + alias + '\'' +
-                ", bank='" + bank + '\'' +
-                ", iban='" + iban + '\'' +
-                ", balance=" + balance +
-                ", currency=" + currency +
-                '}';
     }
 }
