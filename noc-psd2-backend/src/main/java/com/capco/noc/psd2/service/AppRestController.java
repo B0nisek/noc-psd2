@@ -141,6 +141,8 @@ public class AppRestController {
             linkBbvaBankAccount(bbvaBankAccount, alias, account);
         }
 
+        //TODO - check Erste for account with specified IBAN
+
         if(!accountFound){
             return new ResponseEntity<>("{\"message\": \"Account with IBAN: '" + iban + "' not found in partner banks.\"}", HttpStatus.BAD_REQUEST);
         }
