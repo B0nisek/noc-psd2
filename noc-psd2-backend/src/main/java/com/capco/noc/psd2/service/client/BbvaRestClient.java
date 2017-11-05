@@ -75,7 +75,13 @@ public class BbvaRestClient {
     }
 
     public BankAccount getUserAccountByIban(String userId, String iban){
-        String response = restTemplate.getForObject(BBVA_BASE_URL + "/" + userId + "/account/ib/" + iban, String.class);
+        String response;
+        try {
+            response = restTemplate.getForObject(BBVA_BASE_URL + "/" + userId + "/account/ib/" + iban, String.class);
+        } catch (Exception e){
+            return null;
+        }
+
         JsonObject jsonObject = jsonParser.parse(response).getAsJsonObject();
 
         if(!isResponseOk(jsonObject)){

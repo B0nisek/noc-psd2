@@ -5,7 +5,7 @@ angular.module('psdAddAccountComponent',[]).component('psdAddAccount', {
 		ngHide: '<'
 	},
 	templateUrl: 'tribefire-js-components/psd-add-account/psd-add-account.html',
-	controllerAs: 'vm',
+	controllerAs: 'ctrl',
 	controller: function($location,$anchorScroll,$timeout){
 		var self = this;
         self.stages = self.stageNames.split(",");

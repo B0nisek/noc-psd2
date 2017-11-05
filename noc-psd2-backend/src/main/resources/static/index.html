@@ -53,11 +53,17 @@
 				ng-hide="!owner">
 			</psd-accounts>
 
-			<!--<psd-add-account-->
-				<!--add-new-account-callback="addNewAccount"-->
-				<!--ng-hide="!loggedIn"-->
-				<!--stage-names="IBAN,Credentials,Authenticate">      				-->
-			<!--</psd-add-account>-->
+			<md-card ng-if="addAccountErrorMessage">
+				<md-card-content>
+					<span style="color: red">{{addAccountErrorMessage}}</span>
+				</md-card-content>
+			</md-card>
+
+			<psd-add-account
+				add-new-account-callback="addNewAccount"
+				ng-hide="!loggedIn"
+				stage-names="IBAN,Credentials,Authenticate">
+			</psd-add-account>
 
 		</div>
 		<div flex></div>

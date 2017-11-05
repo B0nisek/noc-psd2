@@ -64,7 +64,13 @@ public class FidorRestClient {
     }
 
     public BankAccount getAccountByIban(String iban){
-        String response = restTemplate.getForObject(FIDOR_BASE_URL + "/account/" + iban, String.class);
+        String response;
+        try {
+            response = restTemplate.getForObject(FIDOR_BASE_URL + "/account/" + iban, String.class);
+        } catch (Exception e){
+            return null;
+        }
+
         JsonObject jsonObject = jsonParser.parse(response).getAsJsonObject();
 
         if(!isResponseOk(jsonObject)){

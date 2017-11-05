@@ -1,6 +1,3 @@
-/*
-*	Setup of angular application
-*/
 var app = angular.module('tfTableTestApp', ['ngMaterial', 'ngMessages', 'psdAddAccountComponent','psdAccountsComponent', 'md.data.table'])
 	.config(function($mdThemingProvider) {
 	    $mdThemingProvider.definePalette('amazingPaletteName', {
@@ -35,6 +32,8 @@ app.controller('mainController',function($scope, $http){
     $scope.loggedIn = false;
     $scope.authToken = null;
     $scope.userError = false;
+    $scope.addAccountErrorMessage = null;
+
 
     $scope.owner = null;
 
@@ -66,6 +65,26 @@ app.controller('mainController',function($scope, $http){
     }
 
     $scope.addNewAccount = function (account) {
-        //TODO - implement
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/psd/acc/add',
+            headers: {
+                'auth-token' : '' + $scope.authToken + ''
+            },
+            data: {
+                iban: account.iban,
+                alias: account.alias,
+                username: account.username,
+                password: account.pwd,
+                tan: account.tan
+            }
+        }).then(function successCallback(response) {
+            console.log(response);
+            $scope.addAccountErrorMessage = false;
+            loadBankAccounts();
+        }, function errorCallback(response) {
+            console.log(response);
+            $scope.addAccountErrorMessage = response.data.message;
+        });
     };
 });
