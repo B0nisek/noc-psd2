@@ -1,6 +1,6 @@
 (function(angular) {
   'use strict';
-angular.module('tfTableTestApp').component('tfTable', {
+angular.module('multibankApp').component('table', {
   bindings: {
     access: '@?',
     type: '@?',
@@ -11,8 +11,8 @@ angular.module('tfTableTestApp').component('tfTable', {
     ngHide: '<'
   },
 
-  templateUrl: 'tribefire-js-components/tfTable/tfTable.html',
-  controller: ("tfTableCtrl",function($scope){
+  templateUrl: 'components/table/table.html',
+  controller: ("tableCtrl",function($scope){
 
       $scope.tableMetaData = {};
       $scope.tableMetaData.paging = parseInt(this.paging, 10);

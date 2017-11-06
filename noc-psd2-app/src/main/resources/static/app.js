@@ -1,4 +1,4 @@
-var app = angular.module('tfTableTestApp', ['ngMaterial', 'ngMessages', 'psdAddAccountComponent','psdAccountsComponent', 'md.data.table'])
+var app = angular.module('multibankApp', ['ngMaterial', 'ngMessages', 'psdAddAccountComponent','psdAccountsComponent', 'md.data.table'])
 	.config(function($mdThemingProvider) {
 	    $mdThemingProvider.definePalette('amazingPaletteName', {
             '50': '80ff00',
@@ -37,13 +37,13 @@ app.controller('mainController',function($scope, $http){
 
     $scope.owner = null;
 
-    $scope.tfLoginCallBack = function(loginResult){
+    $scope.loginCallBack = function(loginResult){
         $scope.authToken = loginResult.data.token;
         $scope.loggedIn = true;
         loadBankAccounts();
     };
 
-    $scope.tfLogoutCallback = function(logoutResult){
+    $scope.logoutCallback = function(logoutResult){
         $scope.authToken = null;
         $scope.loggedIn = false;
     };

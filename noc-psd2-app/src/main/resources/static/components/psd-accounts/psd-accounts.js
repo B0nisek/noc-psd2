@@ -4,7 +4,7 @@ angular.module('psdAccountsComponent',[]).component('psdAccounts', {
 		tfDebug: '<',
 		ngHide: '<'
 	},
-	templateUrl: 'tribefire-js-components/psd-accounts/psd-accounts.html',
+	templateUrl: 'components/psd-accounts/psd-accounts.html',
 	controllerAs: 'ctrl',
 	controller: function(){
 		var self = this;

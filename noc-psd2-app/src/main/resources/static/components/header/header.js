@@ -1,13 +1,13 @@
 (function(angular) {
   'use strict';
-angular.module('tfTableTestApp').component('tfHeader', {
+angular.module('multibankApp').component('header', {
     bindings: {
         onLogout: "=",
         authToken: "<"
     },
 
-  templateUrl: 'tribefire-js-components/tribefire-header/tribefire-header.html',
-  controller: ("tribefireHeader", function($scope, $http){
+  templateUrl: 'components/header/header.html',
+  controller: ("headerController", function($scope, $http){
 
       var onLogout = this.onLogout;
       var authToken = this.authToken;

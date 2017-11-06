@@ -4,7 +4,7 @@ angular.module('psdAddAccountComponent',[]).component('psdAddAccount', {
 		stageNames: '@?',
 		ngHide: '<'
 	},
-	templateUrl: 'tribefire-js-components/psd-add-account/psd-add-account.html',
+	templateUrl: 'components/psd-add-account/psd-add-account.html',
 	controllerAs: 'ctrl',
 	controller: function($location,$anchorScroll,$timeout){
 		var self = this;

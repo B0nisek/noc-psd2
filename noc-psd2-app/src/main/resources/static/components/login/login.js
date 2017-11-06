@@ -1,13 +1,13 @@
 (function(angular) {
   'use strict';
 
-angular.module('tfTableTestApp').component('tfLogin', {
+angular.module('multibankApp').component('login', {
   bindings: { 
     onLogin: "=",
     autoLogin: "<"
   },
-  templateUrl: 'tribefire-js-components/tribefire-login/tribefire-login.html',
-  controller: ("tfTableCtrl",function($scope, $http){
+  templateUrl: 'components/login/login.html',
+  controller: ("loginCtrl",function($scope, $http){
 
     this.$onInit = function(){
       $scope.autoLogin = this.autoLogin;

@@ -27,19 +27,19 @@
 
 </head>
 
-<body ng-app="tfTableTestApp" ng-controller="mainController">
-	<tf-header
-		on-logout="tfLogoutCallback"
+<body ng-app="multibankApp" ng-controller="mainController">
+	<header
+		on-logout="logoutCallback"
 		auth-token="authToken"
         ng-hide="!loggedIn"
     >
-	</tf-header>
+	</header>
 
-	<tf-login
-		on-login="tfLoginCallBack"
+	<login
+		on-login="loginCallBack"
 		auto-login="false"
 		ng-hide="loggedIn">
-	</tf-login>
+	</login>
 
 	<p ng-if="userError">
 		Error fetching accounts for users
@@ -69,16 +69,16 @@
 		<div flex></div>
 	</div>
 
-	<!-- Load Tribefire Component Dependencies -->
-	<script src="tribefire-js-components/psd-add-account/psd-add-account.js"></script>
-	<script src="tribefire-js-components/psd-accounts/psd-accounts.js"></script>
+	<!-- Load Component Dependencies -->
+	<script src="components/psd-add-account/psd-add-account.js"></script>
+	<script src="components/psd-accounts/psd-accounts.js"></script>
 
     <!-- Load App -->
 	<script src="app.js"></script>
 
-	<!-- Load Tribefire Component Dependencies -->
-	<script src="tribefire-js-components/tribefire-login/tribefire-login.js"></script>
-	<script src="tribefire-js-components/tribefire-header/tribefire-header.js"></script>
-	<script src="tribefire-js-components/tfTable/tableComponent.js"></script>
+	<!-- Load Component Dependencies -->
+	<script src="components/login/login.js"></script>
+	<script src="components/header/header.js"></script>
+	<script src="components/table/table.js"></script>
 </body>
 </html>
