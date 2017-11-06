@@ -113,22 +113,22 @@ public class Psd2Application {
 	    Account ownerAccount = accountRepository.findByUsername(USER_NAME);
 
         //Retrieve and persist Fidor accounts
-        List<BankAccount> fidorAccounts = fidorRestClient.getAccounts(USER_NAME);
-        for(BankAccount bankAccount: fidorAccounts){
-            bankAccount.setOwnerAccount(ownerAccount);
-            bankAccountRepository.save(bankAccount);
-
-            List<Transaction> transactions = fidorRestClient.getAccountTransactions(bankAccount.getIban());
-            for(Transaction transaction: transactions){
-                transaction.setBankAccount(bankAccount);
-                transactionRepository.save(transaction);
-            }
-            bankAccount.setTransactions(transactions);
-            bankAccountRepository.save(bankAccount);
-        }
-
-        ownerAccount.getBankAccounts().addAll(fidorAccounts);
-        accountRepository.save(ownerAccount);
+//        List<BankAccount> fidorAccounts = fidorRestClient.getAccounts(USER_NAME);
+//        for(BankAccount bankAccount: fidorAccounts){
+//            bankAccount.setOwnerAccount(ownerAccount);
+//            bankAccountRepository.save(bankAccount);
+//
+//            List<Transaction> transactions = fidorRestClient.getAccountTransactions(bankAccount.getIban());
+//            for(Transaction transaction: transactions){
+//                transaction.setBankAccount(bankAccount);
+//                transactionRepository.save(transaction);
+//            }
+//            bankAccount.setTransactions(transactions);
+//            bankAccountRepository.save(bankAccount);
+//        }
+//
+//        ownerAccount.getBankAccounts().addAll(fidorAccounts);
+//        accountRepository.save(ownerAccount);
 
         //Retrieve and persist BBVA accounts
         List<BankAccount> bbvaAccounts = bbvaRestClient.getUserAccounts(USER_NAME);
