@@ -6,8 +6,9 @@
 
 	<groupId>com.capco.noc</groupId>
 	<artifactId>psd2</artifactId>
-	<version>1.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <packaging>pom</packaging>
 
 	<dependencies>
 		<dependency>
@@ -18,10 +19,8 @@
 	</dependencies>
 
 	<modules>
-		<module>noc-psd2-backend</module>
-		<!--<module>noc-psd2-frontend</module>-->
-		<module>noc-psd2-rest-api-tests</module>
-		<!--<module>noc-psd2-e2e-tests</module>-->
+        <module>noc-psd2-rest-api-tests</module>
+        <module>noc-psd2-backend</module>
 	</modules>
 
 </project>
