@@ -36,7 +36,7 @@ multiple ways to run the application, the first one is using an IDE (We prefer t
 but feel free to use your favourite IDE):
 * Import and run application from IntelliJ IDEA: [IntelliJ Import](https://www.jetbrains.com/help/idea/maven.html#maven_import_project_start)
 
-Other option is to build and run it from command line. Navigate to `noc-psd2-app` directory and run the following command:
+Other option is to build and run it from command line. Navigate to application root directory and run the following command:
 * Build and run: `mvn spring-boot:run`
 
 After this step, you should be able to navigate to `http://localhost:8080/` in your favourite browser and

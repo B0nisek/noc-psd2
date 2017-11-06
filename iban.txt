@@ -1,2 +1,8 @@
 Fidor account IBAN: DE32700222009510260101
 Erste account IBAN: CZ0708000000001019382023
+
+Erste endpoints:
+http://localhost:8080/erste/netbanking/{userId}/my/accounts
+http://localhost:8080/erste/netbanking/{userId}/my/accounts/{accountId}
+http://localhost:8080/erste/netbanking/{userId}/my/accounts/ib/{iban}
+http://localhost:8080/erste/netbanking/{userId}/my/accounts/{accountId}/transactions
