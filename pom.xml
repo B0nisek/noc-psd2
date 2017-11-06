@@ -20,7 +20,7 @@
 
 	<modules>
         <module>noc-psd2-rest-api-tests</module>
-        <module>noc-psd2-backend</module>
+        <module>noc-psd2-app</module>
 	</modules>
 
 </project>
