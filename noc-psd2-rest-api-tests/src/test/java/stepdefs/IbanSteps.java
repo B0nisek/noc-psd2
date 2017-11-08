@@ -13,7 +13,6 @@ import static com.jayway.restassured.RestAssured.given;
 public class IbanSteps {
     private Response response;
     private RequestSpecification request;
-    private ValidatableResponse json;
 
     @Given("^endpoint for IBAN \"([^\"]*)\" from bank \"([^\"]*)\"$")
     public void endpoint_for_IBAN_from_bank(String iban, String bank) throws Throwable {
@@ -21,14 +20,20 @@ public class IbanSteps {
 
     }
 
-    @When("^IBAN data are received from server$")
-    public void iban_data_are_received_from_server() throws Throwable {
-        response = request.when().get(Util.getLocalBaseUri() +  "{bank}/account/{iban}" );
+    @Given("^endpoint for IBAN \"([^\"]*)\" from bank fidor$")
+    public void endpoint_for_IBAN_from_bank_fidor(String iban) throws Throwable {
+        request = given().pathParam("iban", iban);
+
+    }
+
+    @When("^IBAN data are received for fidor bank$")
+    public void iban_data_are_received_for_fidor_bank() throws Throwable {
+        response = request.when().get(Util.getLocalBaseUri() +  "fidor/account/{iban}" );
 
     }
 
     @Then("^the status code from IBAN endpoint is (\\d+)$")
     public void the_status_code_from_IBAN_endpoint_is(int statusCode) throws Throwable {
-        json = response.then().statusCode(statusCode);
+        response.then().statusCode(statusCode);
     }
 }
