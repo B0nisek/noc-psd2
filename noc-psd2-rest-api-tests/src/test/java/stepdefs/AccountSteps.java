@@ -22,18 +22,17 @@ public class AccountSteps {
         request = given().pathParam("bank", bank).pathParam("customer", customer);
     }
 
-    @When("^data are received from server$")
+    @When("^account data are received from server$")
     public void data_are_recieved_from_server() throws Throwable {
         response = request.when().get(Util.getLocalBaseUri() +  "{bank}/customer/{customer}" );
-        System.out.println("pozri tu response: " + response.prettyPrint());
     }
 
-    @Then("^the status code is (\\d+)$")
+    @Then("^the status code from account endpoint is (\\d+)$")
     public void the_status_code_is(int statusCode) throws Throwable {
         json = response.then().statusCode(statusCode);
     }
 
-    @Then("^body contains \"([^\"]*)\"$")
+    @Then("^body in account contains \"([^\"]*)\"$")
     public void body_contains(String bodyString) throws Throwable {
         Assert.assertThat(response.asString(), CoreMatchers.containsString(bodyString));
     }
