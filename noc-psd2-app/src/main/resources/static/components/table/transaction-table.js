@@ -1,6 +1,6 @@
 (function(angular) {
   'use strict';
-angular.module('multibankApp').component('table', {
+angular.module('multibankApp').component('transactionTable', {
   bindings: {
     access: '@?',
     type: '@?',
@@ -11,7 +11,7 @@ angular.module('multibankApp').component('table', {
     ngHide: '<'
   },
 
-  templateUrl: 'components/table/table.html',
+  templateUrl: 'components/table/transaction-table.html',
   controller: ("tableCtrl",function($scope){
 
       $scope.tableMetaData = {};

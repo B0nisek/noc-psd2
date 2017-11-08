@@ -33,13 +33,13 @@
 		    </div>
 
 			<div ng-if="account.transActive" class="customDivide">
-				<table
+				<transaction-table
 					json-array="account.transactions"
 					paging="5"
 					show-properties="transactionId,description"
 					tf-debug="false"
 					ng-if="account.transActive">
-				</table>
+				</transaction-table>
 				<div 
 					flex layout="column">
 				    <md-button 
