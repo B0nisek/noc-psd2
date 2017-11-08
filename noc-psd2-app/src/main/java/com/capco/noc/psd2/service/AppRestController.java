@@ -53,7 +53,7 @@ public class AppRestController {
         this.jsonParser = new JsonParser();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/login")
+    @RequestMapping(method = RequestMethod.POST, value = "/login", produces = "application/json; charset=utf-8")
     ResponseEntity<String> login(@RequestBody String loginInformation){
         JsonElement jsonElement = jsonParser.parse(loginInformation);
         JsonObject jsonObject = jsonElement.getAsJsonObject();
