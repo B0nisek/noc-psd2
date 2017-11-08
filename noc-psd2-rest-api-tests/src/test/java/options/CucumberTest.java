@@ -9,4 +9,5 @@ import org.junit.runner.RunWith;
         plugin = {"pretty"},
         glue = {"stepdefs"},
         features = {"src/test/features"})
-public class CucumberTest {}
+public class CucumberTest {
+}
